@@ -8,8 +8,11 @@ _A disassembler and lifter for the MSP430 architecture._
 This plugin disassembles MSP430 assembly code and generates LLIL.
 
 To install this plugin, navigate to your Binary Ninja plugins directory, and run
+
 ```git clone https://github.com/joshwatson/binaryninja-msp430.git msp430```
+
 Then create a python file called `msp430.py` with the contents
+
 ```import msp430```
 
 ## Minimum Version
