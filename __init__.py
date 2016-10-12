@@ -33,7 +33,7 @@ TYPE1_INSTRUCTIONS = [
 # Type 2 instructions are those that take one operand.
 TYPE2_INSTRUCTIONS = [
     'rrc', 'swpb', 'rra', 'sxt', 'push', 'call',
-    'reti'
+    'reti', 'br'
 ]
 
 # Type 3 instructions are (un)conditional branches. They do not
@@ -550,6 +550,20 @@ InstructionIL = {
             else il.nop()
         )
     ],
+    'br': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
+        jump(il, SourceOperandsIL[src_op](il, width, src, src_value)),
+        (
+            il.set_reg(
+                2, src,
+                il.add(
+                    width,
+                    il.reg(2, src),
+                    il.const(2, width)
+                )
+            ) if src_op == INDIRECT_AUTOINCREMENT_MODE
+            else il.nop()
+        )
+    ],
     'call': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
         call(il, src_op, src, src_value),
     'cmp': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -982,6 +996,9 @@ class MSP430(Architecture):
         elif operand_length == 4:
             src_value, dst_value = struct.unpack('<HH', data[2:6])
 
+        if instr == 'mov' and dst == 'pc':
+            instr = 'br'
+
         return instr, width, src_operand, dst_operand, src, dst, length, src_value, dst_value
 
     def perform_get_instruction_info(self, data, addr):
@@ -996,7 +1013,7 @@ class MSP430(Architecture):
         # Add branches
         if instr == 'ret' or instr == 'reti':
             result.add_branch(FunctionReturn)
-        elif instr == 'jmp':
+        elif instr == 'jmp' or instr == 'br':
             result.add_branch(UnconditionalBranch, src_value)
         elif instr in TYPE3_INSTRUCTIONS:
             result.add_branch(TrueBranch, src_value)
