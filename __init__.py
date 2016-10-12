@@ -357,6 +357,17 @@ def cond_branch(il, cond, dest):
 
     il.mark_label(f)
 
+def jump(il, dest):
+    label = il.get_label_for_address(
+        Architecture['msp430'],
+        il[dest].value
+    )
+
+    if label is None:
+        return il.jump(dest)
+    else:
+        return il.goto(label)
+
 def call(il, src_op, src, src_value):
     if src_op == INDIRECT_AUTOINCREMENT_MODE:
         # autoincrement mode is special in that prior to making the call,
@@ -599,7 +610,7 @@ InstructionIL = {
     'jlo': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
         cond_branch(il, il.flag_condition(LLFC_ULT), il.const(2, src_value)),
     'jmp': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
-        il.jump(il.const(2, src_value)),
+        jump(il, il.const(2, src_value)),
     'jn': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
         cond_branch(
             il,
