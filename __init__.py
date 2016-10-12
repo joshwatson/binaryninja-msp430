@@ -578,14 +578,15 @@ InstructionIL = {
     'call': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
         call(il, src_op, src, src_value),
     'cmp': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
-        il.compare_equal(
+        il.sub(
             width,
             SourceOperandsIL[dst_op](
                 il, width, dst, dst_value
             ),
             SourceOperandsIL[src_op](
                 il, width, src, src_value
-            )
+            ),
+            flags='*'
         ),
         (
             il.set_reg(
