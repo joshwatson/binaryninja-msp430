@@ -338,11 +338,22 @@ def cond_branch(il, cond, dest):
     )
 
     if t is None:
-        return
+        # t is not an address in the current function scope.
+        t = LowLevelILLabel()
+        indirect = True
+    else:
+        indirect = False
 
     f = LowLevelILLabel()
 
     il.append(il.if_expr(cond, t, f))
+
+    if indirect:
+        # If the destination is not in the current function,
+        # then a jump, rather than a goto, needs to be added to
+        # the IL.
+        il.mark_label(t)
+        il.append(il.jump(dest))
 
     il.mark_label(f)
 
