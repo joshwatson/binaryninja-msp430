@@ -993,7 +993,8 @@ class MSP430(Architecture):
         result = InstructionInfo()
         result.length = length
 
-        if instr == 'ret':
+        # Add branches
+        if instr == 'ret' or instr == 'reti':
             result.add_branch(FunctionReturn)
         elif instr == 'jmp':
             result.add_branch(UnconditionalBranch, src_value)
