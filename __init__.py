@@ -940,7 +940,7 @@ class MSP430(Architecture):
             instr = InstructionNames[opcode]
 
         if instr is None:
-            log_error('Bad opcode: {:x}'.format(opcode))
+            log_error('[{:x}] Bad opcode: {:x}'.format(addr, opcode))
             return error_value
 
         if instr not in TYPE3_INSTRUCTIONS:
