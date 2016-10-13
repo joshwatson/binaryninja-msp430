@@ -14,7 +14,7 @@ from binaryninja import (
     UnconditionalBranch, FunctionReturn, TrueBranch, FalseBranch,
     CallDestination,
 
-    LLIL_TEMP,
+    LLIL_TEMP, LLIL_CONST,
 
     LowLevelILLabel,
 
@@ -359,10 +359,13 @@ def cond_branch(il, cond, dest):
     il.mark_label(f)
 
 def jump(il, dest):
-    label = il.get_label_for_address(
-        Architecture['msp430'],
-        il[dest].value
-    )
+    label = None
+
+    if il[dest].operation == LLIL_CONST:
+        label = il.get_label_for_address(
+            Architecture['msp430'],
+            il[dest].value
+        )
 
     if label is None:
         return il.jump(dest)
@@ -1028,9 +1031,9 @@ class MSP430(Architecture):
         result.length = length
 
         # Add branches
-        if instr == 'ret' or instr == 'reti':
+        if instr in ['ret', 'reti']:
             result.add_branch(FunctionReturn)
-        elif instr == 'jmp' or instr == 'br':
+        elif instr in ['jmp', 'br'] and src_value is not None:
             result.add_branch(UnconditionalBranch, src_value)
         elif instr in TYPE3_INSTRUCTIONS:
             result.add_branch(TrueBranch, src_value)
