@@ -918,7 +918,11 @@ class MSP430(Architecture):
     }
 
     flags = ['v', 'n', 'c', 'z']
-    flag_write_types = ['*', 'cnv', 'cnz']
+
+    # The first flag write type is ignored currently.
+    # See: https://github.com/Vector35/binaryninja-api/issues/513
+    flag_write_types = ['', '*', 'cnv', 'cnz']
+
     flags_written_by_flag_write_type = {
         '*': ['v', 'n', 'c', 'z'],
         'cnv': ['v', 'n', 'c'],
@@ -1091,25 +1095,5 @@ class MSP430(Architecture):
                 il.append(il_instr)
 
         return length
-
-    def perform_get_flag_write_low_level_il(self, op, size, write_type, flag, operands, il):
-        log_info("perform_get_flag_write_low_level_il")
-        return il.unimplemented()
-
-    def perform_get_flag_condition_low_level_il(self, cond, il):
-        if cond == LLFC_E:
-            return il.compare_equal(0, il.flag('z'), il.const(0, 0))
-        elif cond == LLFC_NE:
-            return il.compare_not_equal(0, il.flag('z'), il.const(0, 0))
-        elif cond == LLFC_SGE:
-            return il.compare_equal(0, il.flag('n'), il.flag('v'))
-        elif cond == LLFC_SLT:
-            return il.compare_not_equal(0, il.flag('n'), il.flag('v'))
-        elif cond == LLFC_UGE:
-            return il.compare_equal(0, il.flag('c'), il.const(0, 1))
-        elif cond == LLFC_ULT:
-            return il.compare_not_equal(0, il.flag('c'), il.const(0, 1))
-        else:
-            return il.unimplemented()
 
 MSP430.register()
