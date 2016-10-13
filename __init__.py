@@ -279,7 +279,7 @@ SourceOperandsIL = [
 
     # SYMBOLIC_MODE
     lambda il, width, reg, value: il.load(
-        width, il.reg(2, il.reg(2, reg), il.const(2, value))
+        width, il.add(2, il.reg(2, 'pc'), il.const(2, value))
     ),
 
     # ABSOLUTE_MODE
