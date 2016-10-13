@@ -12,6 +12,7 @@ from binaryninja import (
     RegisterToken,
 
     UnconditionalBranch, FunctionReturn, TrueBranch, FalseBranch,
+    CallDestination,
 
     LLIL_TEMP,
 
@@ -1034,6 +1035,8 @@ class MSP430(Architecture):
         elif instr in TYPE3_INSTRUCTIONS:
             result.add_branch(TrueBranch, src_value)
             result.add_branch(FalseBranch, addr + 2)
+        elif instr == 'call' and src_value is not None:
+            result.add_branch(CallDestination, src_value)
 
         return result
 
