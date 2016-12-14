@@ -822,41 +822,9 @@ InstructionIL = {
                 SourceOperandsIL[src_op](
                     il, 1, src, src_value
                 ),
+                flags='*'
             ),
         ),
-        # il.sign_extend doesn't have a flags parameter, so we must set the
-        # flags ourselves.
-        il.set_flag(
-            'n',
-            il.test_bit(
-                1,
-                SourceOperandsIL[src_op](
-                    il, 2, src, src_value
-                ),
-                il.const(2, 0x8000)
-            )
-        ),
-        il.set_flag(
-            'c',
-            il.test_bit(
-                1,
-                SourceOperandsIL[src_op](
-                    il, 2, src, src_value
-                ),
-                il.const(2, 0x8000)
-            )
-        ),
-        il.set_flag(
-            'z',
-            il.compare_equal(
-                2,
-                SourceOperandsIL[src_op](
-                    il, 2, src, src_value
-                ),
-                il.const(2, 0)
-            )
-        ),
-        il.set_flag('v', il.const(0, 0)),
         (
             il.set_reg(
                 2, src,
