@@ -1,9 +1,6 @@
 from __future__ import print_function
 
 import struct
-import traceback
-import os
-import sys
 
 from binaryninja import (
     Architecture, RegisterInfo, InstructionInfo,
@@ -21,9 +18,9 @@ from binaryninja import (
     CarryFlagRole, NegativeSignFlagRole, ZeroFlagRole, OverflowFlagRole,
 
     LLFC_UGE, LLFC_ULT, LLFC_E, LLFC_NE, LLFC_NEG, LLFC_POS, LLFC_SGE,
-    LLFC_SLE, LLFC_SLT,
+    LLFC_SLT,
 
-    log_error, log_info)
+    log_error)
 
 # Type 1 instructions are those that take two operands.
 TYPE1_INSTRUCTIONS = [
