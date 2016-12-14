@@ -967,7 +967,7 @@ class MSP430(Architecture):
 
             # check if it's a negative offset
             if branch_target & 0x700:
-                branch_target = branch_target - (1 << 11)
+                branch_target -= 0x800
 
             src_value = addr + 2 + branch_target
 
