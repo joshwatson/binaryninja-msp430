@@ -5,20 +5,17 @@ import struct
 from binaryninja import (
     Architecture, RegisterInfo, InstructionInfo,
 
-    InstructionTextToken, TextToken, IntegerToken, PossibleAddressToken,
-    RegisterToken,
+    InstructionTextToken, InstructionTextTokenType,
 
-    UnconditionalBranch, FunctionReturn, TrueBranch, FalseBranch,
-    CallDestination,
+    BranchType,
 
-    LLIL_TEMP, LLIL_CONST,
+    LowLevelILOperation, LLIL_TEMP,
 
     LowLevelILLabel,
 
-    CarryFlagRole, NegativeSignFlagRole, ZeroFlagRole, OverflowFlagRole,
+    FlagRole,
 
-    LLFC_UGE, LLFC_ULT, LLFC_E, LLFC_NE, LLFC_NEG, LLFC_POS, LLFC_SGE,
-    LLFC_SLT,
+    LowLevelILFlagCondition,
 
     log_error)
 
@@ -130,53 +127,53 @@ OperandLengths = [
 
 OperandTokens = [
     lambda reg, value: [    # REGISTER_MODE
-        InstructionTextToken(RegisterToken, reg)
+        InstructionTextToken(InstructionTextTokenType.RegisterToken, reg)
     ],
     lambda reg, value: [    # INDEXED_MODE
-        InstructionTextToken(IntegerToken, hex(value), value),
-        InstructionTextToken(TextToken, '('),
-        InstructionTextToken(RegisterToken, reg),
-        InstructionTextToken(TextToken, ')')
+        InstructionTextToken(InstructionTextTokenType.IntegerToken, hex(value), value),
+        InstructionTextToken(InstructionTextTokenType.TextToken, '('),
+        InstructionTextToken(InstructionTextTokenType.RegisterToken, reg),
+        InstructionTextToken(InstructionTextTokenType.TextToken, ')')
     ],
     lambda reg, value: [    # INDIRECT_REGISTER_MODE
-        InstructionTextToken(TextToken, '@'),
-        InstructionTextToken(RegisterToken, reg)
+        InstructionTextToken(InstructionTextTokenType.TextToken, '@'),
+        InstructionTextToken(InstructionTextTokenType.RegisterToken, reg)
     ],
     lambda reg, value: [    # INDIRECT_AUTOINCREMENT_MODE
-        InstructionTextToken(TextToken, '@'),
-        InstructionTextToken(RegisterToken, reg),
-        InstructionTextToken(TextToken, '+')
+        InstructionTextToken(InstructionTextTokenType.TextToken, '@'),
+        InstructionTextToken(InstructionTextTokenType.RegisterToken, reg),
+        InstructionTextToken(InstructionTextTokenType.TextToken, '+')
     ],
     lambda reg, value: [    # SYMBOLIC_MODE
-        InstructionTextToken(PossibleAddressToken, hex(value), value)
+        InstructionTextToken(InstructionTextTokenType.PossibleAddressToken, hex(value), value)
     ],
     lambda reg, value: [    # ABSOLUTE_MODE
-        InstructionTextToken(TextToken, '&'),
-        InstructionTextToken(PossibleAddressToken, hex(value), value)
+        InstructionTextToken(InstructionTextTokenType.TextToken, '&'),
+        InstructionTextToken(InstructionTextTokenType.PossibleAddressToken, hex(value), value)
     ],
     lambda reg, value: [    # IMMEDIATE_MODE
-        InstructionTextToken(PossibleAddressToken, hex(value), value)
+        InstructionTextToken(InstructionTextTokenType.PossibleAddressToken, hex(value), value)
     ],
     lambda reg, value: [    # CONSTANT_MODE0
-        InstructionTextToken(IntegerToken, str(0), 0)
+        InstructionTextToken(InstructionTextTokenType.IntegerToken, str(0), 0)
     ],
     lambda reg, value: [    # CONSTANT_MODE1
-        InstructionTextToken(IntegerToken, str(1), 1)
+        InstructionTextToken(InstructionTextTokenType.IntegerToken, str(1), 1)
     ],
     lambda reg, value: [    # CONSTANT_MODE2
-        InstructionTextToken(IntegerToken, str(2), 2)
+        InstructionTextToken(InstructionTextTokenType.IntegerToken, str(2), 2)
     ],
     lambda reg, value: [    # CONSTANT_MODE4
-        InstructionTextToken(IntegerToken, str(4), 4)
+        InstructionTextToken(InstructionTextTokenType.IntegerToken, str(4), 4)
     ],
     lambda reg, value: [    # CONSTANT_MODE8
-        InstructionTextToken(IntegerToken, str(8), 8)
+        InstructionTextToken(InstructionTextTokenType.IntegerToken, str(8), 8)
     ],
     lambda reg, value: [    # CONSTANT_MODE_NEG1
-        InstructionTextToken(IntegerToken, str(-1), -1)
+        InstructionTextToken(InstructionTextTokenType.IntegerToken, str(-1), -1)
     ],
     lambda reg, value: [    # OFFSET
-        InstructionTextToken(PossibleAddressToken, hex(value), value)
+        InstructionTextToken(InstructionTextTokenType.PossibleAddressToken, hex(value), value)
     ]
 ]
 
@@ -342,7 +339,16 @@ def cond_branch(il, cond, dest):
     else:
         indirect = False
 
-    f = LowLevelILLabel()
+    f_label_found = True
+
+    f = il.get_label_for_address(
+        Architecture['msp430'],
+        il.current_address+2
+    )
+
+    if f is None:
+        f = LowLevelILLabel()
+        f_label_found = False
 
     il.append(il.if_expr(cond, t, f))
 
@@ -353,12 +359,13 @@ def cond_branch(il, cond, dest):
         il.mark_label(t)
         il.append(il.jump(dest))
 
-    il.mark_label(f)
+    if not f_label_found:
+        il.mark_label(f)
 
 def jump(il, dest):
     label = None
 
-    if il[dest].operation == LLIL_CONST:
+    if il[dest].operation == LowLevelILOperation.LLIL_CONST:
         label = il.get_label_for_address(
             Architecture['msp430'],
             il[dest].value
@@ -604,13 +611,13 @@ InstructionIL = {
     'dadd': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
         il.unimplemented(),
     'jge': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
-        cond_branch(il, il.flag_condition(LLFC_SGE), il.const(2, src_value)),
+        cond_branch(il, il.flag_condition(LowLevelILFlagCondition.LLFC_SGE), il.const(2, src_value)),
     'jhs': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
-        cond_branch(il, il.flag_condition(LLFC_UGE), il.const(2, src_value)),
+        cond_branch(il, il.flag_condition(LowLevelILFlagCondition.LLFC_UGE), il.const(2, src_value)),
     'jl': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
-        cond_branch(il, il.flag_condition(LLFC_SLT), il.const(2, src_value)),
+        cond_branch(il, il.flag_condition(LowLevelILFlagCondition.LLFC_SLT), il.const(2, src_value)),
     'jlo': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
-        cond_branch(il, il.flag_condition(LLFC_ULT), il.const(2, src_value)),
+        cond_branch(il, il.flag_condition(LowLevelILFlagCondition.LLFC_ULT), il.const(2, src_value)),
     'jmp': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
         jump(il, il.const(2, src_value)),
     'jn': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
@@ -620,9 +627,9 @@ InstructionIL = {
             il.const(2, src_value)
         ),
     'jnz': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
-        cond_branch(il, il.flag_condition(LLFC_NE), il.const(2, src_value)),
+        cond_branch(il, il.flag_condition(LowLevelILFlagCondition.LLFC_NE), il.const(2, src_value)),
     'jz': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
-        cond_branch(il, il.flag_condition(LLFC_E), il.const(2, src_value)),
+        cond_branch(il, il.flag_condition(LowLevelILFlagCondition.LLFC_E), il.const(2, src_value)),
     'mov': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
         DestOperandsIL[dst_op](
             il, width, dst, dst_value,
@@ -898,21 +905,21 @@ class MSP430(Architecture):
         'cnz': ['c', 'n', 'z']
     }
     flag_roles = {
-        'c': CarryFlagRole,
-        'n': NegativeSignFlagRole,
-        'z': ZeroFlagRole,
-        'v': OverflowFlagRole
+        'c': FlagRole.CarryFlagRole,
+        'n': FlagRole.NegativeSignFlagRole,
+        'z': FlagRole.ZeroFlagRole,
+        'v': FlagRole.OverflowFlagRole
     }
 
     flags_required_for_flag_condition = {
-        LLFC_UGE: ['c'],
-        LLFC_ULT: ['c'],
-        LLFC_SGE: ['n', 'v'],
-        LLFC_SLT: ['n', 'v'],
-        LLFC_E: ['z'],
-        LLFC_NE: ['z'],
-        LLFC_NEG: ['n'],
-        LLFC_POS: ['n']
+        LowLevelILFlagCondition.LLFC_UGE: ['c'],
+        LowLevelILFlagCondition.LLFC_ULT: ['c'],
+        LowLevelILFlagCondition.LLFC_SGE: ['n', 'v'],
+        LowLevelILFlagCondition.LLFC_SLT: ['n', 'v'],
+        LowLevelILFlagCondition.LLFC_E: ['z'],
+        LowLevelILFlagCondition.LLFC_NE: ['z'],
+        LowLevelILFlagCondition.LLFC_NEG: ['n'],
+        LowLevelILFlagCondition.LLFC_POS: ['n']
     }
 
     stack_pointer = 'sp'
@@ -997,14 +1004,14 @@ class MSP430(Architecture):
 
         # Add branches
         if instr in ['ret', 'reti']:
-            result.add_branch(FunctionReturn)
+            result.add_branch(BranchType.FunctionReturn)
         elif instr in ['jmp', 'br'] and src_value is not None:
-            result.add_branch(UnconditionalBranch, src_value)
+            result.add_branch(BranchType.UnconditionalBranch, src_value)
         elif instr in TYPE3_INSTRUCTIONS:
-            result.add_branch(TrueBranch, src_value)
-            result.add_branch(FalseBranch, addr + 2)
+            result.add_branch(BranchType.TrueBranch, src_value)
+            result.add_branch(BranchType.FalseBranch, addr + 2)
         elif instr == 'call' and src_value is not None:
-            result.add_branch(CallDestination, src_value)
+            result.add_branch(BranchType.CallDestination, src_value)
 
         return result
 
@@ -1025,13 +1032,13 @@ class MSP430(Architecture):
             instruction_text += '.b'
 
         tokens = [
-            InstructionTextToken(TextToken, '{:7s}'.format(instruction_text))
+            InstructionTextToken(InstructionTextTokenType.TextToken, '{:7s}'.format(instruction_text))
         ]
 
         if instr in TYPE1_INSTRUCTIONS:
             tokens += OperandTokens[src_operand](src, src_value)
 
-            tokens += [InstructionTextToken(TextToken, ',')]
+            tokens += [InstructionTextToken(InstructionTextTokenType.TextToken, ',')]
 
             tokens += OperandTokens[dst_operand](dst, dst_value)
 
