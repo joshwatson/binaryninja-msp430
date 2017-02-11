@@ -15,8 +15,6 @@ To install this plugin, navigate to your Binary Ninja plugins directory, and run
 
 This plugin requires the following minimum version of Binary Ninja:
 
- * dev (Personal) - 1.0.dev-71
- * dev (Commercial) - 1.0.dev-71
  * release (Commercial) - 1.0.320
  * release (Personal) - 1.0.13
 
