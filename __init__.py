@@ -425,7 +425,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'addc': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -456,7 +456,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'and': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -481,7 +481,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'bic': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -509,7 +509,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'bis': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -534,7 +534,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'bit': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -559,7 +559,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'br': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -573,7 +573,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'call': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
@@ -598,7 +598,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'dadd': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
@@ -638,7 +638,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'pop': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -654,7 +654,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'push': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -673,7 +673,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'ret': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value:
@@ -704,7 +704,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'rrc': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -728,7 +728,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'sub': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -754,7 +754,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'subc': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -785,7 +785,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'swpb': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -808,7 +808,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'sxt': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -831,7 +831,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
     'xor': lambda il, src_op, dst_op, src, dst, width, src_value, dst_value: [
@@ -857,7 +857,7 @@ InstructionIL = {
                     il.const(2, width)
                 )
             ) if src_op == INDIRECT_AUTOINCREMENT_MODE
-            else il.nop()
+            else None
         )
     ],
 }
@@ -1060,7 +1060,7 @@ class MSP430(Architecture):
                 il, src_operand, dst_operand, src, dst, width, src_value, dst_value
             )
             if isinstance(il_instr, list):
-                for i in il_instr:
+                for i in [i for i in il_instr if i is not None]:
                     il.append(i)
             elif il_instr is not None:
                 il.append(il_instr)
