@@ -12,10 +12,8 @@
 		"version": "0.1b",
 		"author": "Josh Watson",
 		"minimumBinaryNinjaVersion": {
-			"dev (Personal)": "1.0.dev-71",
-			"dev (Commercial)": "1.0.dev-71",
-			"release (Personal)": "1.0.7",
-			"release (Commercial)": "1.0.7"
+			"release (Personal)": "1.0.13",
+			"release (Commercial)": "1.0.320"
 		}
 	}
 }
