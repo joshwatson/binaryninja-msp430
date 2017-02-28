@@ -1,7 +1,7 @@
 {
 	"plugin": {
 		"name": "MSP430 Architecture Plugin",
-		"type": ["core", "ui", "architecture"],
+		"type": ["architecture"],
 		"api": "python2",
 		"description": "A disassembler and lifter for the MSP430 architecture.",
 		"longdescription": "This plugin disassembles MSP430 assembly code and generates LLIL.\n\nTo install this plugin, navigate to your Binary Ninja plugins directory, and run\n\n```git clone https://github.com/joshwatson/binaryninja-msp430.git msp430```\n\nThen create a python file called `msp430.py` with the contents\n\n```import msp430```",
