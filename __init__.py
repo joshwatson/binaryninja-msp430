@@ -17,7 +17,9 @@ from binaryninja import (
 
     LowLevelILFlagCondition,
 
-    log_error)
+    log_error,
+
+    CallingConvention)
 
 # Type 1 instructions are those that take two operands.
 TYPE1_INSTRUCTIONS = [
@@ -145,7 +147,7 @@ OperandTokens = [
         InstructionTextToken(InstructionTextTokenType.TextToken, '+')
     ],
     lambda reg, value: [    # SYMBOLIC_MODE
-        InstructionTextToken(InstructionTextTokenType.PossibleAddressToken, hex(value), value)
+        InstructionTextToken(InstructionTextTokenType.CodeRelativeAddressToken, hex(value), value)
     ],
     lambda reg, value: [    # ABSOLUTE_MODE
         InstructionTextToken(InstructionTextTokenType.TextToken, '&'),
@@ -277,7 +279,7 @@ SourceOperandsIL = [
     ),
 
     # ABSOLUTE_MODE
-    lambda il, width, reg, value: il.load(width, il.const(2, value)),
+    lambda il, width, reg, value: il.load(width, il.const_pointer(2, value)),
 
     # IMMEDIATE_MODE
     lambda il, width, reg, value: il.const(width, value),
@@ -320,16 +322,16 @@ DestOperandsIL = [
     lambda il, width, reg, value, src: il.unimplemented(),
 
     # ABSOLUTE_MODE
-    lambda il, width, reg, value, src: il.store(width, il.const(2, value), src),
+    lambda il, width, reg, value, src: il.store(width, il.const_pointer(2, value), src),
 
     # IMMEDIATE_MODE
-    lambda il, width, reg, value, src: il.store(width, il.const(2, value), src),
+    lambda il, width, reg, value, src: il.store(width, il.const_pointer(2, value), src),
 ]
 
 def cond_branch(il, cond, dest):
     t = il.get_label_for_address(
         Architecture['msp430'],
-        il[dest].value
+        il[dest].constant
     )
 
     if t is None:
@@ -368,7 +370,7 @@ def jump(il, dest):
     if il[dest].operation == LowLevelILOperation.LLIL_CONST:
         label = il.get_label_for_address(
             Architecture['msp430'],
-            il[dest].value
+            il[dest].constant
         )
 
     if label is None:
@@ -1074,4 +1076,16 @@ class MSP430(Architecture):
 
         return length
 
+
+class DefaultCallingConvention(CallingConvention):
+    name = 'default'
+    int_arg_regs = ['r15', 'r14', 'r13', 'r12']
+    int_return_reg = 'r15'
+    high_int_return_reg = 'r14'
+
+
 MSP430.register()
+arch = Architecture['msp430']
+arch.register_calling_convention(DefaultCallingConvention(arch))
+standalone = arch.standalone_platform
+standalone.default_calling_convention = arch.calling_conventions['default']
