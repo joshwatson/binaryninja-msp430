@@ -401,6 +401,11 @@ def call(il, src_op, src, src_value):
         il.append(temp_expr)
         il.append(inc_expr)
 
+    elif src_op == IMMEDIATE_MODE:
+        call_expr = il.call(
+            il.const_pointer(2, src_value)
+        )
+
     else:
         call_expr = il.call(
             SourceOperandsIL[src_op](
@@ -871,6 +876,7 @@ InstructionIL = {
     ],
 }
 
+
 class MSP430(Architecture):
     name = 'msp430'
     address_size = 2
@@ -937,13 +943,13 @@ class MSP430(Architecture):
         if instruction == 0x4130:
             return 'ret', None, None, None, None, None, 2, None, None
 
-        opcode = (instruction&0xf000) >> 12
+        opcode = (instruction & 0xf000) >> 12
 
         mask = InstructionMask.get(opcode)
         shift = InstructionMaskShift.get(opcode)
 
         if mask and shift:
-            instr = InstructionNames[opcode][(instruction&mask)>>shift]
+            instr = InstructionNames[opcode][(instruction & mask) >> shift]
         else:
             instr = InstructionNames[opcode]
 
@@ -1078,7 +1084,6 @@ class MSP430(Architecture):
 
 
 class DefaultCallingConvention(CallingConvention):
-    name = 'default'
     int_arg_regs = ['r15', 'r14', 'r13', 'r12']
     int_return_reg = 'r15'
     high_int_return_reg = 'r14'
@@ -1086,6 +1091,6 @@ class DefaultCallingConvention(CallingConvention):
 
 MSP430.register()
 arch = Architecture['msp430']
-arch.register_calling_convention(DefaultCallingConvention(arch))
+arch.register_calling_convention(DefaultCallingConvention(arch, 'default'))
 standalone = arch.standalone_platform
 standalone.default_calling_convention = arch.calling_conventions['default']
