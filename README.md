@@ -1,4 +1,4 @@
-# MSP430 Architecture Plugin (v0.2b)
+# MSP430 Architecture Plugin (v0.3)
 Author: **Josh Watson**
 
 _A disassembler and lifter for the MSP430 architecture._
@@ -15,8 +15,7 @@ To install this plugin, navigate to your Binary Ninja plugins directory, and run
 
 This plugin requires the following minimum version of Binary Ninja:
 
- * release (Commercial) - 1.0.320
- * release (Personal) - 1.0.13
+ * release - 1.1.776
 
 ## License
 
