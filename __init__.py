@@ -981,8 +981,9 @@ class MSP430(Architecture):
             branch_target = (instruction & 0x3ff) << 1
 
             # check if it's a negative offset
-            if branch_target & 0x700:
-                branch_target -= 0x800
+            if branch_target & 0x600:
+                branch_target |= 0xf800
+                branch_target -= 0x10000
 
             src_value = addr + 2 + branch_target
 
