@@ -19,7 +19,9 @@ from binaryninja import (
 
     log_error,
 
-    CallingConvention)
+    CallingConvention,
+
+    Endianness)
 
 # Type 1 instructions are those that take two operands.
 TYPE1_INSTRUCTIONS = [
@@ -1095,3 +1097,4 @@ arch = Architecture['msp430']
 arch.register_calling_convention(DefaultCallingConvention(arch, 'default'))
 standalone = arch.standalone_platform
 standalone.default_calling_convention = arch.calling_conventions['default']
+BinaryViewType['ELF'].register_arch(105, Endianness.LittleEndian, arch)
