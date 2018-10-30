@@ -7,7 +7,7 @@ from binaryninja import (
 
     InstructionTextToken, InstructionTextTokenType,
 
-    BranchType,
+    BranchType, BinaryViewType,
 
     LowLevelILOperation, LLIL_TEMP,
 
