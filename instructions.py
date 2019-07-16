@@ -126,57 +126,6 @@ Registers = [
     'r15'
 ]
 
-
-def GetOperands(instr, instruction):
-    if instr in TYPE3_INSTRUCTIONS:
-        return None, OFFSET, None, None
-
-    width = 1 if (instruction & 0x40) >> 6 else 2
-
-    # As is in the same place for Type 1 and 2 instructions
-    As = (instruction & 0x30) >> 4
-
-    if instr in TYPE2_INSTRUCTIONS:
-        src = Registers[instruction & 0xf]
-        dst = None
-        Ad = None
-
-    elif instr in TYPE1_INSTRUCTIONS:
-        src = Registers[(instruction & 0xf00) >> 8]
-        dst = Registers[instruction & 0xf]
-        Ad = (instruction & 0x80) >> 7
-
-    if src == 'pc':
-        if As == INDEXED_MODE:
-            As = SYMBOLIC_MODE
-        elif As == INDIRECT_AUTOINCREMENT_MODE:
-            As = IMMEDIATE_MODE
-
-    elif src == 'cg':
-        if As == REGISTER_MODE:
-            As = CONSTANT_MODE0
-        elif As == INDEXED_MODE:
-            As = CONSTANT_MODE1
-        elif As == INDIRECT_REGISTER_MODE:
-            As = CONSTANT_MODE2
-        else:
-            As = CONSTANT_MODE_NEG1
-
-    elif src == 'sr':
-        if As == INDEXED_MODE:
-            As = ABSOLUTE_MODE
-        elif As == INDIRECT_REGISTER_MODE:
-            As = CONSTANT_MODE4
-        elif As == INDIRECT_AUTOINCREMENT_MODE:
-            As = CONSTANT_MODE8
-
-    if dst and dst == 'sr':
-        if Ad == INDEXED_MODE:
-            Ad = ABSOLUTE_MODE
-
-    return src, As, dst, Ad, width
-
-
 OperandTokens = [
     lambda reg, value: [    # REGISTER_MODE
         InstructionTextToken(InstructionTextTokenType.RegisterToken, reg)
@@ -235,19 +184,6 @@ OperandTokens = [
     ]
 ]
 
-
-def GetRegisterValues(instr, instruction):
-    if instr in TYPE1_INSTRUCTIONS:
-        src = (instruction & 0xf00) >> 8
-        dst = (instruction & 0xf)
-    elif instr in TYPE2_INSTRUCTIONS:
-        src = instruction & 0xf
-        dst = None
-    else:
-        src = None
-        dst = None
-
-    return src, dst
 
 class Operand:
     def __init__(

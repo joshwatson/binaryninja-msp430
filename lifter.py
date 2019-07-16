@@ -213,7 +213,7 @@ class Lifter:
     @staticmethod
     def lift_bic(il, instr):
         left = SourceOperandsIL[instr.dst.mode](
-            il, instr.dst
+            il, instr.dst.width, instr.dst.target, instr.dst.value
         )
 
         right = il.not_expr(
@@ -484,6 +484,7 @@ class Lifter:
             2,
             left,
             right,
+            il.flag('c'),
             flags='*'
         )
 
@@ -497,7 +498,7 @@ class Lifter:
 
     @staticmethod
     def lift_sub(il, instr):
-        sub = Lifter.lift_type1(il, il.sub, instr.src, instr.dst, flags='*')
+        sub = Lifter.lift_type1(il, il.sub, instr.dst, instr.src, flags='*')
 
         il.append(
             DestOperandsIL[instr.dst.mode](
