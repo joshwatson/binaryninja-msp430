@@ -1,7 +1,7 @@
 from binaryninja import (LLIL_TEMP, Architecture, LowLevelILFlagCondition,
                          LowLevelILLabel, LowLevelILOperation)
 
-from .instructions import IMMEDIATE_MODE, INDIRECT_AUTOINCREMENT_MODE
+from .instructions import IMMEDIATE_MODE, INDIRECT_AUTOINCREMENT_MODE, REGISTER_MODE
 
 SourceOperandsIL = [
     # REGISTER_MODE
@@ -333,6 +333,14 @@ class Lifter:
         il.append(il.unimplemented())
 
     @staticmethod
+    def lift_dint(il, instr):
+        pass
+
+    @staticmethod
+    def lift_hlt(il, instr):
+        il.append(il.no_ret())
+
+    @staticmethod
     def lift_jge(il, instr):
         cond_branch(
             il,
@@ -408,6 +416,12 @@ class Lifter:
 
     @staticmethod
     def lift_mov(il, instr):
+        # avoid setting stack pointer to a constant
+        if (instr.src.mode == IMMEDIATE_MODE and
+                instr.dst.target == 'sp' and
+                instr.dst.mode == REGISTER_MODE):
+            return
+
         src = SourceOperandsIL[instr.src.mode](
             il, instr.src.width, instr.src.target, instr.src.value
         )

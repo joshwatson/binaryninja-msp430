@@ -1,5 +1,3 @@
-import struct
-
 from binaryninja import (Architecture, FlagRole, LowLevelILFlagCondition,
                          RegisterInfo, log_error, InstructionInfo, BranchType, InstructionTextToken, InstructionTextTokenType)
 
@@ -10,6 +8,8 @@ class MSP430(Architecture):
     name = 'msp430'
     address_size = 2
     default_int_size = 2
+    global_regs = ['sr']
+    stack_pointer = 'sp'
 
     regs = {r: RegisterInfo(r, 2) for r in Registers}
 
@@ -41,8 +41,6 @@ class MSP430(Architecture):
         LowLevelILFlagCondition.LLFC_NEG: ['n'],
         LowLevelILFlagCondition.LLFC_POS: ['n']
     }
-
-    stack_pointer = 'sp'
 
     def perform_get_instruction_info(self, data, addr):
         instr = Instruction.decode(data, addr)
@@ -81,6 +79,15 @@ class MSP430(Architecture):
 
         if instr is None:
             return None
+
+        # Halting the system means turning off interrupts and just looping
+        # indefinitely
+        if instr.mnemonic == 'dint':
+            next_instr = Instruction.decode(
+                data[instr.length:], addr + instr.length
+            )
+            if next_instr.mnemonic == 'jmp' and next_instr.src.value == addr:
+                instr.mnemonic = 'hlt'
     
         Lifter.lift(il, instr)
 

@@ -352,6 +352,13 @@ class Instruction:
             mnemonic = 'br'
             emulated = True
 
+        elif (
+            mnemonic == 'bis' and
+            dst.target == 'sr' and
+            src.value == 0xf0
+        ):
+            return cls('dint', length=length, emulated=True)
+
         return cls(
             mnemonic,
             type_,
