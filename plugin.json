@@ -1,18 +1,24 @@
 {
-	"plugin": {
-		"name": "MSP430 Architecture Plugin",
-		"type": ["architecture"],
-		"api": "python2",
-		"description": "A disassembler and lifter for the MSP430 architecture.",
-		"longdescription": "This plugin disassembles MSP430 assembly code and generates LLIL.\n\nTo install this plugin, navigate to your Binary Ninja plugins directory, and run\n\n```git clone https://github.com/joshwatson/binaryninja-msp430.git msp430```\n\nThen create a python file called `msp430.py` with the contents\n\n```import msp430```",
-		"license": {
-			"name": "MIT",
-			"text": "Copyright (c) 2016 Josh Watson.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-		},
-		"version": "0.3",
-		"author": "Josh Watson",
-		"minimumBinaryNinjaVersion": {
-			"release": "1.1.922"
-		}
-	}
+    "pluginmetadataversion": 2,
+    "name": "msp430 Architecture",
+    "type": ["architecture" ],
+    "api": ["python2", "python3"],
+    "description": "MSP430 Architecture Plugin for Binary Ninja",
+    "longdescription": "This plugin implements the MSP430 architecture disassembler and lifter for Binary Ninja.",
+    "license": {
+            "name": "MIT",
+            "text": "Copyright (c) 2017 Josh Watson\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+
+    },
+    "platforms": ["Windows", "Linux", "Darwin"],
+    "installinstructions" : {
+            "Windows":"",
+            "Linux":"",
+            "Darwin":""
+    },
+    "dependencies": {
+    },
+    "version": "0.4",
+    "author": "Josh Watson",
+    "minimumbinaryninjaversion": 1689
 }
