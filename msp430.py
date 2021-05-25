@@ -33,6 +33,7 @@ class MSP430(Architecture):
 
     flags_required_for_flag_condition = {
         LowLevelILFlagCondition.LLFC_UGE: ['c'],
+        LowLevelILFlagCondition.LLFC_UGT: ['c'],
         LowLevelILFlagCondition.LLFC_ULT: ['c'],
         LowLevelILFlagCondition.LLFC_SGE: ['n', 'v'],
         LowLevelILFlagCondition.LLFC_SLT: ['n', 'v'],
