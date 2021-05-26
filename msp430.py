@@ -35,6 +35,7 @@ class MSP430(Architecture):
         LowLevelILFlagCondition.LLFC_UGE: ['c'],
         LowLevelILFlagCondition.LLFC_UGT: ['c'],
         LowLevelILFlagCondition.LLFC_ULT: ['c'],
+        LowLevelILFlagCondition.LLFC_ULE: ['c'],
         LowLevelILFlagCondition.LLFC_SGE: ['n', 'v'],
         LowLevelILFlagCondition.LLFC_SLT: ['n', 'v'],
         LowLevelILFlagCondition.LLFC_E: ['z'],

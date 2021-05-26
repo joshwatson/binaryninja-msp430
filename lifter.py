@@ -355,7 +355,7 @@ class Lifter:
         cond_branch(
             il,
             il.flag_condition(
-                LowLevelILFlagCondition.LLFC_UGE
+                LowLevelILFlagCondition.LLFC_ULE
             ),
             il.const(2, instr.src.value)
         )
