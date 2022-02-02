@@ -39,14 +39,16 @@ class MSP430(Architecture):
     }
 
     flags_required_for_flag_condition = {
-        LowLevelILFlagCondition.LLFC_UGE: ["c"],
-        LowLevelILFlagCondition.LLFC_ULT: ["c"],
-        LowLevelILFlagCondition.LLFC_SGE: ["n", "v"],
-        LowLevelILFlagCondition.LLFC_SLT: ["n", "v"],
-        LowLevelILFlagCondition.LLFC_E: ["z"],
-        LowLevelILFlagCondition.LLFC_NE: ["z"],
-        LowLevelILFlagCondition.LLFC_NEG: ["n"],
-        LowLevelILFlagCondition.LLFC_POS: ["n"],
+        LowLevelILFlagCondition.LLFC_UGE: ['c'],
+        LowLevelILFlagCondition.LLFC_UGT: ['c'],
+        LowLevelILFlagCondition.LLFC_ULT: ['c'],
+        LowLevelILFlagCondition.LLFC_ULE: ['c'],
+        LowLevelILFlagCondition.LLFC_SGE: ['n', 'v'],
+        LowLevelILFlagCondition.LLFC_SLT: ['n', 'v'],
+        LowLevelILFlagCondition.LLFC_E: ['z'],
+        LowLevelILFlagCondition.LLFC_NE: ['z'],
+        LowLevelILFlagCondition.LLFC_NEG: ['n'],
+        LowLevelILFlagCondition.LLFC_POS: ['n']
     }
 
     def get_instruction_info(self, data, addr):

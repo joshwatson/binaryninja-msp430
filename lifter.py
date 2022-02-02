@@ -305,7 +305,7 @@ class Lifter:
     def lift_jhs(il, instr):
         cond_branch(
             il,
-            il.flag_condition(LowLevelILFlagCondition.LLFC_UGE),
+            il.flag_condition(LowLevelILFlagCondition.LLFC_ULE),
             il.const(2, instr.src.value),
         )
 
@@ -321,7 +321,7 @@ class Lifter:
     def lift_jlo(il, instr):
         cond_branch(
             il,
-            il.flag_condition(LowLevelILFlagCondition.LLFC_ULT),
+            il.flag_condition(LowLevelILFlagCondition.LLFC_UGT),
             il.const(2, instr.src.value),
         )
 
