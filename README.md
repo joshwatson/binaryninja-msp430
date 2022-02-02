@@ -1,4 +1,4 @@
-# MSP430 Architecture Plugin (v0.5)
+# MSP430 Architecture Plugin (v0.6)
 Author: **Josh Watson**
 
 _A disassembler and lifter for the MSP430 architecture._
