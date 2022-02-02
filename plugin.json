@@ -2,7 +2,7 @@
     "pluginmetadataversion": 2,
     "name": "msp430 Architecture",
     "type": ["architecture" ],
-    "api": ["python2", "python3"],
+    "api": ["python3"],
     "description": "MSP430 Architecture Plugin for Binary Ninja",
     "longdescription": "This plugin implements the MSP430 architecture disassembler and lifter for Binary Ninja.",
     "license": {
@@ -18,7 +18,7 @@
     },
     "dependencies": {
     },
-    "version": "0.4",
+    "version": "0.5",
     "author": "Josh Watson",
-    "minimumbinaryninjaversion": 1689
+    "minimumbinaryninjaversion": 3233
 }

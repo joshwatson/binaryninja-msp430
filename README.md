@@ -1,4 +1,4 @@
-# MSP430 Architecture Plugin (v0.4)
+# MSP430 Architecture Plugin (v0.5)
 Author: **Josh Watson**
 
 _A disassembler and lifter for the MSP430 architecture._
@@ -19,7 +19,7 @@ Alternatively-Alternatively, use Binary Ninja's [Plugin Manager](https://binary.
 
 This plugin requires the following minimum version of Binary Ninja:
 
- * release - 1.1.1689
+ * release - 3.0.3233
 
 ## License
 
