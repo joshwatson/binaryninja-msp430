@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Callable, List, Union
 from binaryninja import (
     LLIL_TEMP,
     Architecture,
@@ -15,7 +15,7 @@ from .instructions import IMMEDIATE_MODE, INDIRECT_AUTOINCREMENT_MODE, REGISTER_
 
 SourceOperandsIL: List[
     Callable[
-        [LowLevelILFunction, int | None, RegisterType | None, int | None],
+        [LowLevelILFunction, Union[int, None], Union[RegisterType, None], Union[int, None]],
         ExpressionIndex,
     ]
 ] = [
